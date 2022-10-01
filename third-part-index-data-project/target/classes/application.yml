@@ -1,0 +1,10 @@
+#这段表示注册额中心的地址是 http://localhost:8761/eureka/，
+#与 eureka server 里的application.yml 中的 defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ 遥相呼应。
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+#  这个表示到注册中心里，本应用的名称就是 third-part-index-data-project 了
+spring:
+  application:
+    name: third-part-index-data-project
