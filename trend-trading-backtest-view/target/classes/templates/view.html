@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/header::html('趋势投资模拟回测')" ></head>
+
+<body >
+<script>
+  /**
+   * 业务页面，做了如下几件事情。
+   1. 在开始包含了 header.html
+   2. 在结束包含了 footer.html
+   3. 做了 vue 的框架搭建，虽然什么都没做，先放在这里了，后面直接在这个基础上修改就是了
+   4. 有一些当前页面的简单 样式
+   5. 工作区div： workingArea
+   6. 本页唯一的内容，一个span:
+   <span class="label label-info">回测参数</span>
+   */
+  $(function(){
+    // data4Vue 增加了 indexes 和默认选中的指数 currentIndex
+    var data4Vue = {
+      indexes: [],
+      currentIndex: '000300',
+    };
+
+    //ViewModel
+    var vue = new Vue({
+      el: '#workingArea',
+      data: data4Vue,
+      mounted:function(){ //mounted　表示这个 Vue 对象加载成功了
+        this.init();
+        // 高亮 tooltips， 这个是bootstrap 里的 提示工具
+        $("[data-toggle='tooltip']").tooltip();
+      },
+      methods: {
+        init:function(){
+          var url =  "http://127.0.0.1:8031/api-codes/codes";
+          axios.get(url).then(function(response) {
+            vue.indexes = response.data;
+          });
+        }
+      }
+    });
+  });
+
+</script>
+
+<style>
+  table.inputTable{
+    width:100%;
+  }
+  table.inputTable td{
+    padding:20px 20px;
+  }
+
+  table{
+    margin:20px;
+  }
+
+  div#workingArea{
+    margin:50px;
+  }
+</style>
+
+<div id="workingArea">
+  <span class="label label-info">回测参数</span>
+<!--  遍历这个指数代码集合-->
+  <table class="inputTable ">
+    <tr>
+      <td width="25%">
+                <span data-toggle="tooltip" data-placement="top" title="选择某一个指数进行模拟回测">
+                    请选择指数:<span class="glyphicon glyphicon-question-sign" > </span>
+                </span>
+      </td>
+      <td width="25%">
+        <select v-model="currentIndex" class="indexSelect form-control">
+          <option v-for="bean in indexes " :value="bean.code">{{bean.name}} - ( {{bean.code}} )</option>
+        </select>
+      </td>
+      <td></td>
+      <td></td>
+    </tr>
+  </table>
+</div>
+
+<div th:replace="include/footer::html" ></div>
+
+</body>
+</html>
